@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from modal import App, Image, web_endpoint, Secret
 from fastapi.responses import StreamingResponse
 

@@ -4,10 +4,12 @@ import { ChangeEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function Home() {
   const [url, setUrl] = useState('')
   const [isValidUrl, setIsValidUrl] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +22,7 @@ export default function Home() {
 
   async function onSubmit() {
     if (isValidUrl) {
+      setIsLoading(true);
       const res = await fetch('/api/getfreaky', {
         method: 'POST',
         body: JSON.stringify({
@@ -27,6 +30,7 @@ export default function Home() {
         })
       })
       const new_url = await res.json()
+      setIsLoading(false);
       router.push(`/act?link=${encodeURIComponent(new_url.data)}`)
     }
   }
@@ -43,7 +47,10 @@ export default function Home() {
       
       <Button
         onClick={onSubmit}
-      >Get freaky!</Button>
+        disabled={isLoading}
+      >
+        {isLoading ? <LoadingSpinner /> : 'Get freaky!'}
+      </Button>
     </div>
   )
 }
